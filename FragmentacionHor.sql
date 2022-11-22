@@ -106,7 +106,7 @@
 			on e.LocationID = d.LocationID
 
 
-	 	drop procedure if exists sp_tres
+drop procedure if exists sp_tres
 		go
 
 		create procedure sp_tres
@@ -115,6 +115,7 @@
 		AS
 		BEGIN
 		SET NOCOUNT ON;
+		DECLARE @RegistrosAfectados INTEGER
 
 		DECLARE @strSql1 nvarchar(1000)
 			set @strSql1 = 'update d
@@ -129,12 +130,149 @@
 				on c.ProductCategoryID = b.ProductCategoryID
 				inner join AdventureWorks2019.Production.Location e
 				on e.LocationID = d.LocationID
-				where c.ProductCategoryID=@cat and d.LocationID=@loc'
-			   
-	  execute sp_executesql @strSql1, N'@cat int, @loc int', @cat, @loc
+				where c.ProductCategoryID=@cat and d.LocationID=@loc
+				'
+			
+				execute sp_executesql @strSql1, N'@cat int, @loc int', @cat, @loc
+				SELECT @RegistrosAfectados = @@ROWCOUNT  
+				SELECT @RegistrosAfectados as ProductosAumentados
+			
 	  end
 	  go
 
-	  exec sp_tres 4, 7
+	  exec sp_tres 4, 4
 	  go
 	  --------------------------------------------------------------------------
+	  drop procedure if exists sp_cuatro
+		go
+
+		create procedure sp_cuatro
+		AS
+		BEGIN
+		SET NOCOUNT ON;
+		DECLARE @RegistrosAfectados INTEGER
+
+		DECLARE @strSql4 nvarchar(500)
+			set @strSql4 = 'select a.SalesOrderID, a.TerritoryID, a.SalesPersonID, b.TerritoryID
+					from AdventureWorks2019.Sales.SalesOrderHeader a
+					inner join AdventureWorks2019.Sales.Customer b
+					on a.CustomerID = b.CustomerID
+					where a.TerritoryID != b.TerritoryID'
+			
+				execute sp_executesql @strSql4
+				SELECT @RegistrosAfectados = @@ROWCOUNT  
+				SELECT @RegistrosAfectados as ClientesTD
+	  end
+	  go
+
+	  exec sp_cuatro
+	  go
+
+
+
+	  -----------------------------------------------------------------------------
+	  		drop procedure if exists sp_cinco
+		go
+
+		create procedure sp_cinco
+			@cantidad int,
+			@producto int,
+			@orden int
+		AS
+		BEGIN
+		SET NOCOUNT ON;
+		DECLARE @RegistrosAfectados INTEGER
+
+		DECLARE @strSql5 nvarchar(500)
+			set @strSql5 = 'update AdventureWorks2019.Sales.SalesOrderDetail 
+				set OrderQty = @cantidad
+				from
+				AdventureWorks2019.Sales.SalesOrderDetail 
+				where SalesOrderID = @orden and ProductID = @producto'
+			
+				execute sp_executesql @strSql5, N'@cantidad int, @producto int, @orden int', 
+												@cantidad, @producto, @orden
+				SELECT @RegistrosAfectados = @@ROWCOUNT  
+				SELECT @RegistrosAfectados as ProductosAumentados
+	  end
+	  go
+
+	  exec sp_cinco 5, 776, 43659
+	  go
+
+	  select SalesOrderID, ProductID, OrderQty 
+	  from AdventureWorks2019.Sales.SalesOrderDetail 
+
+	  -----------------------------------------------------------------------------------------------------
+	  	drop procedure if exists sp_seis
+		go
+		create procedure sp_seis
+			@metodo int,
+			@orden int
+		AS
+		BEGIN
+		SET NOCOUNT ON;
+		DECLARE @RegistrosAfectados INTEGER
+
+		DECLARE @strSql6 nvarchar(500)
+			set @strSql6 = 'update AdventureWorks2019.Sales.SalesOrderHeader
+				set	ShipMethodID = @metodo
+				from
+				AdventureWorks2019.Sales.SalesOrderHeader 
+				where SalesOrderID = @orden'
+			
+				execute sp_executesql @strSql6, N'@metodo int, @orden int', @metodo, @orden
+				SELECT @RegistrosAfectados = @@ROWCOUNT  
+				SELECT @RegistrosAfectados as MetodosCambiados
+	  end
+	  go
+
+	  exec sp_seis 3, 43659
+	  go
+
+	  select s.SalesOrderID, s.ShipMethodID, m.Name
+	  from AdventureWorks2019.Sales.SalesOrderHeader s
+	  inner join AdventureWorks2019.Purchasing.ShipMethod m
+	  on s.ShipMethodID=m.ShipMethodID
+
+	  ------------------------------------------------------------------------------------------------
+	  	
+		
+			 	
+		select e.EmailAddress, p.FirstName, p.LastName, p.PersonType
+		from AdventureWorks2019.Person.EmailAddress e
+		inner join AdventureWorks2019.Person.Person p
+		on e.BusinessEntityID = p.BusinessEntityID
+		where p.PersonType = 'IN'
+
+
+		drop procedure if exists sp_siete
+		go
+		create procedure sp_siete
+			@emailnuevo nvarchar(50),
+			@emailanterior nvarchar(50)
+		AS
+		BEGIN
+		SET NOCOUNT ON;
+		DECLARE @RegistrosAfectados INTEGER
+
+		DECLARE @strSql7 nvarchar(900)
+			set @strSql7 = 'update e
+				set e.EmailAddress = @emailnuevo
+				from AdventureWorks2019.Person.EmailAddress e
+				inner join AdventureWorks2019.Person.Person p
+				on e.BusinessEntityID = p.BusinessEntityID
+				where p.PersonType = '+'''IN'''+' and e.EmailAddress = @emailanterior'
+			
+				execute sp_executesql @strSql7, N'@emailnuevo nvarchar(50), @emailanterior nvarchar(50)', 
+													@emailnuevo, @emailanterior
+				SELECT @RegistrosAfectados = @@ROWCOUNT  
+				SELECT @RegistrosAfectados as EmailCambiado
+	  end
+	  go
+  
+	  exec sp_siete 'redfoodiego@gmail.com', 'rebecca3@adventure-works.com'
+	  go
+
+
+
