@@ -1,4 +1,11 @@
-	 	drop procedure if exists sp_uno
+----------------------------------------------
+--[DESKTOP-A5SBAIV\SQLSERVERDOS].productionAW
+--[DESKTOP-A5SBAIV\SQLSERVERTRES].otrosAW
+--[DESKTOP-A5SBAIV].salesAW
+----------------------------------------------
+		
+		
+		drop procedure if exists sp_uno
 		go
 
 		create procedure sp_uno
@@ -53,10 +60,10 @@
 		AS
 		BEGIN
 		SET NOCOUNT ON;
-
+		
 		DECLARE @strSql2 nvarchar(1500)
 			set @strSql2 = 'select top (1) Q.ProductID as ID, Q.Name as Nombre, Q.cantidad as CantidadTotal, 
-					W.TerritoryID as IDTerritorio, W.NombreTerritorio as NTerritotio, W.cantidadpt as CantidadTerritorio
+					W.TerritoryID as IDTerritorio, W.NombreTerritorio as NTerritorio, W.cantidadpt as CantidadTerritorio
 					 from (
 						 select a.ProductID, b.Name, c.TerritoryID, d.Name as NombreTerritorio, count(*) cantidadpt
 						 from [DESKTOP-A5SBAIV].salesAW.Sales.SalesOrderDetail a
@@ -66,7 +73,7 @@
 						 on a.ProductID = b.ProductID
 						 inner join [DESKTOP-A5SBAIV].salesAW.Sales.SalesTerritory d 
 						 on c.TerritoryID = d.TerritoryID
-						 where c.TerritoryID between 1 and 6
+						 where d.TerritoryID between 1 and 6
 						 group by a.ProductID, c.TerritoryID, b.Name, d.Name
 					 ) as W
 					 inner join (
