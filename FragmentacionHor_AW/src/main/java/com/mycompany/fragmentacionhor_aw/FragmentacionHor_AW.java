@@ -9,7 +9,7 @@ public class FragmentacionHor_AW {
         int opc=1;
         
         do{
-            System.out.println("Ingresa una opcion");
+            System.out.println("\n\nIngresa una opcion");
             System.out.println("1. Total de ventas por categoria por territorio");
             System.out.println("2. Producto mas solicitado en North America");
             System.out.println("3. Actualizar stock de cateoria en localidad");

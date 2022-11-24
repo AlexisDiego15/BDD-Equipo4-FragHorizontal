@@ -4,10 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-/**
- *
- * @author Alexis
- */
 public class con1 {
         Scanner leer = new Scanner(System.in);
         BD.BDConexion sq = new BD.BDConexion();
@@ -24,7 +20,7 @@ public class con1 {
             sq.conectar();
 
             ResultSet rsUsr;
-            rsUsr = sq.consulta("select ProductCategoryID, Name from  AdventureWorks2019.Production.ProductCategory order by ProductCategoryID");
+            rsUsr = sq.consulta("select ProductCategoryID, Name from  [DESKTOP-A5SBAIV\\SQLSERVERDOS].productionAW.Production.ProductCategory order by ProductCategoryID");
             while (rsUsr.next()) {
                 nombre = rsUsr.getString("Name");
                 id = rsUsr.getInt("ProductCategoryID");
