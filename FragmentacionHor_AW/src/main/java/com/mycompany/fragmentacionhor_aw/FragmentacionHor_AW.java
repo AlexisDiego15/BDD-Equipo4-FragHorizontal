@@ -12,7 +12,7 @@ public class FragmentacionHor_AW {
             System.out.println("\n\nIngresa una opcion");
             System.out.println("1. Total de ventas por categoria por territorio");
             System.out.println("2. Producto mas solicitado en North America");
-            System.out.println("3. Actualizar stock de cateoria en localidad");
+            System.out.println("3. Actualizar stock de categoria en localidad");
             System.out.println("4. Ver clientes que ordenan en territorio diferente");
             System.out.println("5. Actualizar cantidad de productos en orden");
             System.out.println("6. Actualizar metodo de envio de orden ");

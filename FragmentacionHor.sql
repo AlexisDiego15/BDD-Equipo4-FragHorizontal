@@ -1,9 +1,14 @@
-----------------------------------------------
+----------------------------------------------------
 --[DESKTOP-A5SBAIV\SQLSERVERDOS].productionAW
 --[DESKTOP-A5SBAIV\SQLSERVERTRES].otrosAW
 --[DESKTOP-A5SBAIV].salesAW
-----------------------------------------------
-		
+
+use salesAW
+go
+------------------------------------------------------
+	/*1. Determinar el total de las ventas de los productos con la categoría que
+	se provea de argumento de entrada en la consulta, para cada uno de los 
+	territorios registrados en la base de datos.*/		
 		
 		drop procedure if exists sp_uno
 		go
@@ -46,12 +51,14 @@
 	  end
 	  go
 
-	  exec sp_uno 3
-	  go
+	  --exec sp_uno 3
+	  --go
 	 
 
-	 -------------------------------------------------------------------
-
+-------------------------------------------------------------------
+	/*2.Determinar el producto más solicitado para la región 
+	(atributo group de salesterritory) “Noth America” y en que
+	territorio de la región tiene mayor demanda.*/
 	 
 	drop procedure if exists sp_dos
 		go
@@ -94,31 +101,17 @@
 	  end
 	  go
 
-	  exec sp_dos
-	
+	 --exec sp_dos
+	 --go
 	 	
 	 
 	 -----------------------------------------------------------
-	 drop view if exists vw_tres
-	  go
-	 create view vw_tres as 
-			select a.ProductID, a.Name, b.ProductCategoryID, c.Name as Categoria,
-				floor(d.Quantity) as Cantidad, d.LocationID, e.Name as Locacion
-			from
-			[DESKTOP-A5SBAIV\SQLSERVERDOS].productionAW.Production.Product a
-			inner join [DESKTOP-A5SBAIV\SQLSERVERDOS].productionAW.Production.ProductSubcategory b
-			on a.ProductSubcategoryID = b.ProductSubcategoryID
-			inner join [DESKTOP-A5SBAIV\SQLSERVERDOS].productionAW.Production.ProductCategory c
-			on c.ProductCategoryID = b.ProductCategoryID
-			inner join [DESKTOP-A5SBAIV\SQLSERVERDOS].productionAW.Production.ProductInventory d
-			on a.ProductID = d.ProductID
-			inner join [DESKTOP-A5SBAIV\SQLSERVERDOS].productionAW.Production.Location e
-			on e.LocationID = d.LocationID
-	go
+	/*Actualizar el stock disponible en un 5% de los productos de
+	la categoría que se provea como argumento de entrada en una 
+	localidad que se provea como entrada en la instrucción de actualización	*/
 
-			
 
-drop procedure if exists sp_tres
+		drop procedure if exists sp_tres
 		go
 
 		create procedure sp_tres
@@ -147,17 +140,38 @@ drop procedure if exists sp_tres
 			
 				execute sp_executesql @strSql1, N'@cat int, @loc int', @cat, @loc
 				SELECT @RegistrosAfectados = @@ROWCOUNT  
-				SELECT @RegistrosAfectados as ProductosAumentados
-			
+				SELECT @RegistrosAfectados as ProductosAumentados			
 	  end
 	  go
 
-	  exec sp_tres 4, 6
-	  go
+	  --exec sp_tres 4, 6
+	  --go
 
-	  --------------------------------------------------------------------------
+	  --Vista:
 	  
-	 drop procedure if exists sp_cuatro
+	  drop view if exists vw_tres
+	  go
+	  create view vw_tres as 
+			select a.ProductID as IDProd, a.Name as NProd, b.ProductCategoryID as IDCat,
+			c.Name as Categoria, floor(d.Quantity) as Cantidad, 
+			d.LocationID as IDLoc, e.Name as NLoc
+			from
+			[DESKTOP-A5SBAIV\SQLSERVERDOS].productionAW.Production.Product a
+			inner join [DESKTOP-A5SBAIV\SQLSERVERDOS].productionAW.Production.ProductSubcategory b
+			on a.ProductSubcategoryID = b.ProductSubcategoryID
+			inner join [DESKTOP-A5SBAIV\SQLSERVERDOS].productionAW.Production.ProductCategory c
+			on c.ProductCategoryID = b.ProductCategoryID
+			inner join [DESKTOP-A5SBAIV\SQLSERVERDOS].productionAW.Production.ProductInventory d
+			on a.ProductID = d.ProductID
+			inner join [DESKTOP-A5SBAIV\SQLSERVERDOS].productionAW.Production.Location e
+			on e.LocationID = d.LocationID
+		go
+
+--------------------------------------------------------------------------
+
+		/*4.Determinar si hay clientes que realizan ordenes
+		en territorios diferentes al que se encuentran.*/
+    	drop procedure if exists sp_cuatro
 		go
 
 		create procedure sp_cuatro
@@ -167,7 +181,8 @@ drop procedure if exists sp_tres
 		DECLARE @RegistrosAfectados INTEGER
 
 		DECLARE @strSql4 nvarchar(500)
-			set @strSql4 = 'select a.SalesOrderID, a.TerritoryID, a.SalesPersonID, b.TerritoryID
+			set @strSql4 = 'select a.SalesOrderID as orden, a.TerritoryID as territorio_orden,
+							a.SalesPersonID as cliente, b.TerritoryID as territorio_cliente
 					from [DESKTOP-A5SBAIV].salesAW.Sales.SalesOrderHeader a
 					inner join [DESKTOP-A5SBAIV].salesAW.Sales.Customer b
 					on a.CustomerID = b.CustomerID
@@ -179,13 +194,16 @@ drop procedure if exists sp_tres
 	  end
 	  go
 
-	  exec sp_cuatro
-	  go
+	  --exec sp_cuatro
+	  --go
 
 
 
 	  -----------------------------------------------------------------------------
-	  	drop procedure if exists sp_cinco
+	  	/*5.Actualizar la cantidad de productos de una orden que se 
+		provea como argumento en la instrucción de actualización*/
+		
+		drop procedure if exists sp_cinco
 		go
 
 		create procedure sp_cinco
@@ -211,20 +229,24 @@ drop procedure if exists sp_tres
 	  end
 	  go
 
-	  exec sp_cinco 5, 776, 43659
-	  go
+	 -- exec sp_cinco 5, 776, 43659
+	  --go
 
+	  --Vista:
 	  drop view if exists vw_cinco
 	  go
 	  create view vw_cinco as
-	  select s.SalesOrderID, s.ProductID, s.OrderQty, p.Name
+	  select s.SalesOrderID as Orden, s.ProductID as IDProd, s.OrderQty as Cantidad, p.Name as Nombre
 	  from [DESKTOP-A5SBAIV].salesAW.Sales.SalesOrderDetail s
 	  inner join [DESKTOP-A5SBAIV\SQLSERVERDOS].productionAW.Production.Product p
 	  on p.ProductID = s.ProductID
 	  go
 
 	  -----------------------------------------------------------------------------------------------------
-	  		 drop procedure if exists sp_seis
+	   /*6. Actualizar el método de envío de una orden que se reciba 
+			como argumento en la instrucción de actualización.*/
+	   
+	    drop procedure if exists sp_seis
 		go
 		create procedure sp_seis
 			@metodo int,
@@ -247,34 +269,25 @@ drop procedure if exists sp_tres
 	  end
 	  go
 
-	  exec sp_seis 3, 43659
-	  go
+	  --exec sp_seis 3, 43659
+	  --go
 
+	  --Vista:
 	  drop view if exists vw_seis
 	  go
 	  create view vw_seis as
-	  select s.SalesOrderID, s.ShipMethodID, m.Name
+	  select s.SalesOrderID as IDOrden, s.ShipMethodID as IDMetodo, m.Name as Metodo
 	  from [DESKTOP-A5SBAIV].salesAW.Sales.SalesOrderHeader s
 	  inner join [DESKTOP-A5SBAIV\SQLSERVERTRES].otrosAW.Purchasing.ShipMethod m
 	  on s.ShipMethodID=m.ShipMethodID
 	  go
 
+
 	  ------------------------------------------------------------------------------------------------
-	 			 	
-	drop view if exists vw_siete 
-	go
-	create view vw_siete as
-	  select Correo, Nombre, Apellido from openquery ([DESKTOP-A5SBAIV\SQLSERVERTRES],
-		'select e.EmailAddress as Correo, p.FirstName as Nombre, p.LastName as Apellido, p.PersonType
-		from [DESKTOP-A5SBAIV\SQLSERVERTRES].otrosAW.Person.EmailAddress e
-		inner join [DESKTOP-A5SBAIV\SQLSERVERTRES].otrosAW.Person.Person p
-		on e.BusinessEntityID = p.BusinessEntityID
-		where p.PersonType = ''IN''')
-	go
-
-
-
-				drop procedure if exists sp_siete
+	 	/*7.Actualizar el correo electrónico de una cliente que
+			se reciba como argumento en la instrucción de actualización*/	
+			
+		drop procedure if exists sp_siete
 		go
 		create procedure sp_siete
 			@emailnuevo nvarchar(50),
@@ -304,5 +317,17 @@ drop procedure if exists sp_tres
 	  end
 	  go
   
-	  exec sp_siete 'redfoodiego@gmail.com', 'rebecca3@adventure-works.com'
-	  go
+	  --exec sp_siete 'redfoodiego@gmail.com', 'rebecca3@adventure-works.com'
+	  --go
+
+	  --Vista:
+	  	drop view if exists vw_siete 
+		go
+		create view vw_siete as
+		  select Correo, Nombre, Apellido from openquery ([DESKTOP-A5SBAIV\SQLSERVERTRES],
+			'select e.EmailAddress as Correo, p.FirstName as Nombre, p.LastName as Apellido, p.PersonType
+			from [DESKTOP-A5SBAIV\SQLSERVERTRES].otrosAW.Person.EmailAddress e
+			inner join [DESKTOP-A5SBAIV\SQLSERVERTRES].otrosAW.Person.Person p
+			on e.BusinessEntityID = p.BusinessEntityID
+			where p.PersonType = ''IN''')
+		go

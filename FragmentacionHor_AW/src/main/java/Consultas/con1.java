@@ -13,7 +13,7 @@ public class con1 {
         int cat;
         double total_venta;
     public void consulta() {
-         System.out.println("Ingresa el ID de la categoria para consultar el total de ventas "
+        System.out.println("Ingresa el ID de la categoria para consultar el total de ventas "
                 + "por territorio"); 
         try {
             sq.estableceConnectionString();

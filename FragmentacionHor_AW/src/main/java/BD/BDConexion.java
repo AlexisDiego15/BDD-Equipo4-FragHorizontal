@@ -50,7 +50,7 @@ public class BDConexion {
     public void estableceConnectionString(){
         String user="Alexis";
         String pass="alexobd";
-        String database="AdventureWorks2019";
+        String database="salesAW";
         String server="DESKTOP-A5SBAIV";
         connectionString = "jdbc:sqlserver://"+server+";database="+database+";user="+user+";password="+pass+";"
                 + "encrypt=true;trustServerCertificate=true";
