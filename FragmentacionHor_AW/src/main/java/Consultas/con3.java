@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 public class con3 {
     BD.BDConexion sq = new BD.BDConexion();
+    BD.BDServers bdserver = new BD.BDServers();
     Scanner leer = new Scanner(System.in);
     char opc;
 
@@ -16,6 +17,8 @@ public class con3 {
     int Cantidad;
     int IDLoc;
     String NLoc;
+    
+    String instancia2 = bdserver.ins2();
             
     public void consulta() {
         System.out.println("A. Ver todo el stock de productos");
@@ -201,7 +204,7 @@ public class con3 {
             sq.conectar();
 
             ResultSet rsUsr;
-            rsUsr = sq.consulta("select ProductCategoryID, Name from  [DESKTOP-A5SBAIV\\SQLSERVERDOS].productionAW.Production.ProductCategory order by ProductCategoryID");
+            rsUsr = sq.consulta("select ProductCategoryID, Name from  "+instancia2+".Production.ProductCategory order by ProductCategoryID");
             while (rsUsr.next()) {
                 nombre = rsUsr.getString("Name");
                 id = rsUsr.getInt("ProductCategoryID");
@@ -224,7 +227,7 @@ public class con3 {
             sq.conectar();
 
             ResultSet rsUsr;
-            rsUsr = sq.consulta("select LocationID, Name from  [DESKTOP-A5SBAIV\\SQLSERVERDOS].productionAW.Production.Location order by LocationID");
+            rsUsr = sq.consulta("select LocationID, Name from  "+instancia2+".Production.Location order by LocationID");
             while (rsUsr.next()) {
                 nombre = rsUsr.getString("Name");
                 id = rsUsr.getInt("LocationID");

@@ -7,11 +7,16 @@ import java.util.Scanner;
 public class con1 {
         Scanner leer = new Scanner(System.in);
         BD.BDConexion sq = new BD.BDConexion();
+        BD.BDServers bdserver = new BD.BDServers();
+        
         String msj = "";
         String nombre = "";
         int id;
         int cat;
         double total_venta;
+        
+        String instancia2 = bdserver.ins2();
+        
     public void consulta() {
         System.out.println("Ingresa el ID de la categoria para consultar el total de ventas "
                 + "por territorio"); 
@@ -20,7 +25,7 @@ public class con1 {
             sq.conectar();
 
             ResultSet rsUsr;
-            rsUsr = sq.consulta("select ProductCategoryID, Name from  [DESKTOP-A5SBAIV\\SQLSERVERDOS].productionAW.Production.ProductCategory order by ProductCategoryID");
+            rsUsr = sq.consulta("select ProductCategoryID, Name from  "+instancia2+".Production.ProductCategory order by ProductCategoryID");
             while (rsUsr.next()) {
                 nombre = rsUsr.getString("Name");
                 id = rsUsr.getInt("ProductCategoryID");

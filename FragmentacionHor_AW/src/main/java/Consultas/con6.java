@@ -7,11 +7,15 @@ import java.util.Scanner;
 public class con6 {
 
     BD.BDConexion sq = new BD.BDConexion();
+    BD.BDServers bdserver = new BD.BDServers();
     Scanner leer = new Scanner(System.in);
     char opc;
     int ordenid, nuevomet;
     int IDOrden, IDMetodo;
     String Metodo;
+    
+    
+    String instancia3 = bdserver.ins3();
     
     public void consulta() {BD.BDConexion sq = new BD.BDConexion();
                
@@ -93,7 +97,7 @@ public class con6 {
             sq.estableceConnectionString();
             sq.conectar();
             ResultSet rsUsr;
-            rsUsr = sq.consulta("select ShipMethodID, Name from [DESKTOP-A5SBAIV\\SQLSERVERTRES].otrosAW.Purchasing.ShipMethod order by ShipMethodID");
+            rsUsr = sq.consulta("select ShipMethodID, Name from "+instancia3+".Purchasing.ShipMethod order by ShipMethodID");
             while (rsUsr.next()) {
                 IDMetodo = rsUsr.getInt("ShipMethodID");
                 Metodo = rsUsr.getString("Name");
