@@ -2,6 +2,7 @@ package Consultas;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class con5 {
@@ -19,6 +20,7 @@ public class con5 {
         int ordenid;
         int productoid;
         int nueva_can;
+        int contad=0;
         
         System.out.println("A. Ver todos los productos");
         System.out.println("B. Ver productos por orden");
@@ -37,19 +39,24 @@ public class con5 {
             case 'C':
                 System.out.println("Ingresa el ID de la orden");
                 ordenid=Integer.parseInt(leer.nextLine());
-                verpororden(ordenid);
+                contad=verpororden(ordenid);
                 
-                do{
-                    System.out.println("Ingresa el ID del producto que desea modificar");
-                    productoid=Integer.parseInt(leer.nextLine());
-                    System.out.println("Ingresa la cantidad");
-                    nueva_can=Integer.parseInt(leer.nextLine());
-                    
-                    actualizar(ordenid, productoid, nueva_can);
-                    
-                    System.out.println("Desea actualizar otro producto de esta orden? (S/N)");
-                    res=leer.nextLine().charAt(0);
-                }while(res=='S');
+                if(contad>0){
+                    do{
+                        System.out.println("Ingresa el ID del producto que desea modificar");
+                        productoid=Integer.parseInt(leer.nextLine());
+                        System.out.println("Ingresa la cantidad");
+                        nueva_can=Integer.parseInt(leer.nextLine());
+
+                        actualizar(ordenid, productoid, nueva_can);
+
+                        System.out.println("Desea actualizar otro producto de esta orden? (S/N)");
+                        res=leer.nextLine().charAt(0);
+                    }while(res=='S');
+                }else{
+                    System.out.println("Orden no encontrada");
+                }
+                
                 
             break;
         }    
@@ -79,7 +86,8 @@ public class con5 {
         }
     }
 
-    private void verpororden(int ordenid) {
+    private int verpororden(int ordenid) {
+        int cont=0;
          try {
             sq.estableceConnectionString();
             sq.conectar();
@@ -91,19 +99,23 @@ public class con5 {
                 Cantidad = rsUsr.getInt("Cantidad");
                 Nombre = rsUsr.getString("Nombre");
                 
-                System.out.println(IDProd+"  \t\t  "+Nombre+"  \t\t\t  "+Cantidad);           
+                System.out.println(IDProd+"  \t\t  "+Nombre+"  \t\t\t  "+Cantidad); 
+                cont++;
             }
+            
 
             rsUsr.close();
             sq.cierraConexion();
 
+            
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
+         return cont;
     }
 
     private void actualizar(int ordenid, int productoid, int nueva_can) {
-        int prodc;
+        String prodc;
         
         try {
             sq.estableceConnectionString();
@@ -112,7 +124,7 @@ public class con5 {
             
             rsUsr = sq.consulta("exec sp_cinco '"+nueva_can+"', '"+productoid+"', '"+ordenid+"'");
             if (rsUsr.next()) {
-                prodc = rsUsr.getInt("ProductosAumentados");
+                prodc = rsUsr.getString("ProductosAumentados");
                 System.out.println("Se cambio el stock de "+prodc+" producto(s)");
             }
             rsUsr.close();

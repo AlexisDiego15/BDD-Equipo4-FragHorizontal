@@ -14,6 +14,8 @@ public class con1 {
         int id;
         int cat;
         double total_venta;
+        int contador=0;
+        int contador2=0;
         
         String instancia2 = bdserver.ins2();
         
@@ -34,7 +36,7 @@ public class con1 {
 
             rsUsr.close();
             sq.cierraConexion();
-
+            
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
@@ -51,12 +53,17 @@ public class con1 {
                 id = rsUsr.getInt("Territorio");
                 total_venta= rsUsr.getDouble("Total_Venta");
                 System.out.println("    "+id +"----------"+total_venta);
+                contador++;
             }
             
 
             rsUsr.close();
             sq.cierraConexion();
+        
+            if (contador==0)
+                System.out.println("Categoria incorrecta");
 
+        
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }

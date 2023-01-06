@@ -167,7 +167,7 @@ public class con3 {
     }
 
     private void actualizastock() {
-        int prodau;
+        String prodau;
         System.out.println("Actualizacion de stock");
         int cat;
         System.out.println("Ingresa el ID de la categoria");
@@ -185,7 +185,7 @@ public class con3 {
             
             rsUsr = sq.consulta("exec sp_tres '"+cat+"', '"+loc+"'");
             if (rsUsr.next()) {
-                prodau = rsUsr.getInt("ProductosAumentados");
+                prodau = rsUsr.getString("ProductosAumentados");
                 System.out.println("Se aumento el stock de "+prodau+" productos");
             }
             rsUsr.close();

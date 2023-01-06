@@ -74,7 +74,7 @@ public class con6 {
             sq.conectar();
             ResultSet rsUsr;
             rsUsr = sq.consulta("select * from vw_seis where IDOrden="+ordenid);
-            while (rsUsr.next()) {
+            if (rsUsr.next()) {
                 IDOrden = rsUsr.getInt("IDOrden");
                 IDMetodo = rsUsr.getInt("IDMetodo");
                 Metodo = rsUsr.getString("Metodo");
@@ -115,7 +115,7 @@ public class con6 {
     }
 
     private void actualizar(int ordenid, int nuevomet) {
-        int metc;
+        String metc;
         
         try {
             sq.estableceConnectionString();
@@ -124,7 +124,7 @@ public class con6 {
             
             rsUsr = sq.consulta("exec sp_seis '"+nuevomet+"', '"+ordenid+"'");
             if (rsUsr.next()) {
-                metc = rsUsr.getInt("MetodosCambiados");
+                metc = rsUsr.getString("MetodosCambiados");
                 System.out.println("Se cambio el metodo de "+metc+" orden(es)");
             }
             rsUsr.close();

@@ -88,7 +88,7 @@ public class con7 {
     }
 
     private void actualizar(String Correo_ant, String Correo_nue) {
-        int correoc;
+        String correoc;
         
         try {
             sq.estableceConnectionString();
@@ -97,7 +97,7 @@ public class con7 {
             
             rsUsr = sq.consulta("exec sp_siete '"+Correo_nue+"', '"+Correo_ant+"'");
             if (rsUsr.next()) {
-                correoc = rsUsr.getInt("EmailCambiado");
+                correoc = rsUsr.getString("EmailCambiado");
                 System.out.println("Se cambio "+correoc+" correo(s)");
             }
             rsUsr.close();
